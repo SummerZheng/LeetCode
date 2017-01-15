@@ -1,6 +1,7 @@
 #include<iostream>
 #include<vector>
 #include<algorithm>
+#include<limits>
 
 using namespace std;
 
@@ -26,23 +27,36 @@ int minExchange_DP_topdown(int amount, int max_ix, vector<vector<int> >& DPmat, 
   return DPmat[amount][max_ix];
 }
 
+// int coinChange(vector<int>& coins, int amount) {
+//   if (coins.empty()) return -1;
+//   // sort(coins.begin(), coins.end());
+//   // vector<vector<int> > minExchange(amount+1, vector<int>(coins.size(), special_val));
+//   // return minExchange_DP_topdown(amount, coins.size()-1, minExchange, coins);
+//   vector<int> minEx(amount+1, -1);
+//   minEx[0] = 0;
+//   for (int m = 0; m <= amount; ++m) {
+//     for (int i = 0; i != coins.size(); ++i) {
+//       if (m - coins[i] >= 0 && minEx[m-coins[i]] > -1) {
+//         minEx[m] = minEx[m] > -1 ? min(minEx[m], minEx[m-coins[i]] + 1) : minEx[m - coins[i]] +1; 
+//       }
+//     }
+//   }
+//   return minEx[amount];
+// }
+
 int coinChange(vector<int>& coins, int amount) {
-  if (coins.empty()) return -1;
-  // sort(coins.begin(), coins.end());
-  // vector<vector<int> > minExchange(amount+1, vector<int>(coins.size(), special_val));
-  // return minExchange_DP_topdown(amount, coins.size()-1, minExchange, coins);
-  vector<int> minEx(amount+1, -1);
+  const int max_int = numeric_limits<int>::max();
+  vector<int> minEx(amount+1, max_int); 
   minEx[0] = 0;
   for (int m = 0; m <= amount; ++m) {
     for (int i = 0; i != coins.size(); ++i) {
-      if (m - coins[i] >= 0 && minEx[m-coins[i]] > -1) {
-        minEx[m] = minEx[m] > -1 ? min(minEx[m], minEx[m-coins[i]] + 1) : minEx[m - coins[i]] +1; 
+      if (m - coins[i] >= 0 && minEx[m-coins[i]] != max_int) {
+        minEx[m] = min(minEx[m], minEx[m-coins[i]] + 1); 
       }
     }
   }
-  return minEx[amount];
+  return minEx[amount] == max_int? -1: minEx[amount];
 }
-
 int main() {
   int a[] = {370,417,408,156,143,434,168,83,177,280,117};
   vector<int> coins(a, end(a));
